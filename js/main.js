@@ -5,9 +5,10 @@ var pad1;
 var ro = .5;
 var speed = 1;
 var boost = 0;
+var msgset = 0;
 
 function preload() {
-
+  speak("Exiting Space Station");
   //  You can fill the preloader with as many assets as your game requires
 
   //  Here we are loading an image. The first parameter is the unique
@@ -21,7 +22,7 @@ function preload() {
 }
 
 function create() {
-
+  speak("Welcome to outer Space Ember");
   //  This creates a simple sprite that is using our loaded image and
   //  displays it on-screen
 
@@ -49,20 +50,30 @@ function update(){
   }
   astro.angle += ro;
 
+  if(pad1.buttonValue(2)){
+    matrix("Power Boost!!!");
+    boost = 2;
+  }else{
+    boost = 0;
+  }
   //move left and right
   if(pad1.axis(2) == -1){
-    astro.x+=speed;
+    astro.x+=speed+boost;
   }else if(pad1.axis(2) == 1){
-    astro.x-=speed;
+    astro.x-=speed+boost;
   }
 
   //move up and down
   if(pad1.axis(0) == 1){
-    astro.y+=speed;
+    astro.y+=speed+boost;
   }else if(pad1.axis(0) == -1){
-    astro.y-=speed;
+    astro.y-=speed+boost;
   }
 
+  if(astro.x < 0){ astro.x = 0 }
+  if(astro.x > game.width){ astro.x = game.width}
+  if(astro.y < 0){ astro.y = 0 }
+  if(astro.y > game.height){ astro.y = game.height}
 }
 
 function go_fullscreen(){
@@ -70,3 +81,27 @@ function go_fullscreen(){
   game.scale.startFullScreen();
 }
 
+
+function speak(msg){
+  if ('speechSynthesis' in window) {
+    var msg = new SpeechSynthesisUtterance(msg);
+    msg.lang = 'en-US';
+    window.speechSynthesis.speak(msg);
+  }
+}
+
+function matrix(msg){
+  if(msgset == 0){ 
+    $.get("http://192.168.1.12",{msg:msg},function(data){
+      console.log(data);
+    });
+    msgset = 1;
+    setTimeout(function(){ 
+      $.get("http://192.168.1.12",{msg:"Mission Control to Ember"},function(data){
+        console.log(data);
+      });
+      msgset = 0; 
+    }, 5000);
+  }
+
+}
