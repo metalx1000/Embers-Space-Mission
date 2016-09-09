@@ -6,6 +6,7 @@ var ro = .5;
 var speed = 1;
 var boost = 0;
 var msgset = 0;
+var bg = Math.floor((Math.random() * 9) + 1);
 
 function preload() {
   speak("Exiting Space Station");
@@ -15,19 +16,22 @@ function preload() {
   //  string by which we'll identify the image later in our code.
 
   //  The second parameter is the URL of the image (relative)
-  game.load.image('space', 'res/images/space.jpg');
+  game.load.image('space', 'res/images/space_'+bg+'.jpg');
   game.load.image('astro', 'res/sprites/astro.png');
 
   //game.load.audio('music', ['res/music/music1.ogg', 'res/music/music1.mp3']);
 }
 
 function create() {
+  game.scale.pageAlignHorizontally = true;
+  game.scale.pageAlignVeritcally = true;
+  game.scale.refresh();
   speak("Welcome to outer Space Ember");
   //  This creates a simple sprite that is using our loaded image and
   //  displays it on-screen
 
   space = game.add.sprite(0, 0, 'space');
-  space.scale.setTo(3,3);
+  //space.scale.setTo(3,3);
   astro = game.add.sprite(centerx, centery, 'astro');
   astro.anchor.setTo(0.5, 0.5);
   
