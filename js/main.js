@@ -64,7 +64,7 @@ function create() {
 var packplay = 0;
 function update(){
   //this is where things are updated
-  if(pad1.buttonValue(1)){
+  if(pad1.justPressed(1,100)){
     ro = ro * -1;
   }
   astro.angle += ro;
