@@ -19,26 +19,32 @@ function preload() {
   game.load.image('space', 'res/images/space_'+bg+'.jpg');
   game.load.image('astro', 'res/sprites/astro.png');
 
-  //game.load.audio('music', ['res/music/music1.ogg', 'res/music/music1.mp3']);
+  game.load.audio('music', ['res/music/bg.ogg', 'res/music/bg.mp3']);
+  game.load.audio('startup', ['res/sounds/startup.ogg', 'res/sounds/startup.mp3']);
+  game.load.audio('pack', ['res/sounds/rocketpack.ogg', 'res/sounds/rocketpack.mp3']);
 }
 
 function create() {
   game.scale.pageAlignHorizontally = true;
   game.scale.pageAlignVeritcally = true;
   game.scale.refresh();
+
+  startup_snd = game.add.audio('startup');
+  startup_snd.play();
+
   speak("Welcome to outer Space Ember");
   //  This creates a simple sprite that is using our loaded image and
   //  displays it on-screen
-
   space = game.add.sprite(0, 0, 'space');
   //space.scale.setTo(3,3);
   astro = game.add.sprite(centerx, centery, 'astro');
   astro.anchor.setTo(0.5, 0.5);
   
-
+  //load sounds
+  pack_snd = game.add.audio('pack');
   //  Play some music
-  //music = game.add.audio('music');
-  //music.play('',0,1,true);
+  music = game.add.audio('music');
+  music.play('',0,1,true);
 
   // start fullscreen on click
   game.input.onDown.add(go_fullscreen, this);
@@ -47,6 +53,7 @@ function create() {
   pad1 = game.input.gamepad.pad1;
 }
 
+var packplay = 0;
 function update(){
   //this is where things are updated
   if(pad1.buttonValue(1)){
@@ -57,8 +64,14 @@ function update(){
   if(pad1.buttonValue(2)){
     matrix("Power Boost!!!");
     boost = 2;
+    if(packplay == 0){
+      packplay = 1;
+      pack_snd.play('',0,1,true);
+    }
   }else{
     boost = 0;
+    pack_snd.stop();
+    packplay = 0;
   }
   //move left and right
   if(pad1.axis(2) == -1){
