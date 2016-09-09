@@ -8,6 +8,8 @@ var boost = 0;
 var msgset = 0;
 var bg = Math.floor((Math.random() * 9) + 1);
 
+var mfal = 0;
+
 function preload() {
   speak("Exiting Space Station");
   //  You can fill the preloader with as many assets as your game requires
@@ -16,12 +18,16 @@ function preload() {
   //  string by which we'll identify the image later in our code.
 
   //  The second parameter is the URL of the image (relative)
-  game.load.image('space', 'res/images/space_'+bg+'.jpg');
+  for(var i = 1;i < 10;i++){
+    game.load.image('space_'+i, 'res/images/space_'+i+'.jpg');
+  }
   game.load.image('astro', 'res/sprites/astro.png');
+  game.load.image('mf', 'res/sprites/m-falcom.png');
 
   game.load.audio('music', ['res/music/bg.ogg', 'res/music/bg.mp3']);
   game.load.audio('startup', ['res/sounds/startup.ogg', 'res/sounds/startup.mp3']);
   game.load.audio('pack', ['res/sounds/rocketpack.ogg', 'res/sounds/rocketpack.mp3']);
+  game.load.audio('mfs', ['res/sounds/mf.ogg', 'res/sounds/mf.mp3']);
 }
 
 function create() {
@@ -35,16 +41,18 @@ function create() {
   speak("Welcome to outer Space Ember");
   //  This creates a simple sprite that is using our loaded image and
   //  displays it on-screen
-  space = game.add.sprite(0, 0, 'space');
+  space = game.add.sprite(0, 0, 'space_'+bg);
+  mf = game.add.sprite(-500, -500, 'mf');
   //space.scale.setTo(3,3);
   astro = game.add.sprite(centerx, centery, 'astro');
   astro.anchor.setTo(0.5, 0.5);
   
   //load sounds
   pack_snd = game.add.audio('pack');
+  mfs = game.add.audio('mfs');
   //  Play some music
   music = game.add.audio('music');
-  music.play('',0,1,true);
+  music.play('',0,.3,true);
 
   // start fullscreen on click
   game.input.onDown.add(go_fullscreen, this);
@@ -73,6 +81,25 @@ function update(){
     pack_snd.stop();
     packplay = 0;
   }
+
+  //m-falcom
+  if(pad1.justPressed(4) && mfal == 0){
+    mfal = 1;
+    mfs.play();
+    var tween = game.add.tween(mf);
+    tween.to({ x: 3000, y : 2000 }, 8000, 'Linear', true, 0); 
+    tween.onComplete.add(function(){
+      mf.position.x = -500;
+      mf.position.y = -500;
+      mfal = 0;
+    });
+  }
+
+  //change BG
+  if(pad1.justPressed(5)){
+    changeBG();
+  }
+
   //move left and right
   if(pad1.axis(2) == -1){
     astro.x+=speed+boost;
@@ -121,4 +148,10 @@ function matrix(msg){
     }, 5000);
   }
 
+}
+
+
+function changeBG(){
+  bg = Math.floor((Math.random() * 9) + 1);
+  space.loadTexture('space_'+bg);
 }
