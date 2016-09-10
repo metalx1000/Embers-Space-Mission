@@ -12,6 +12,7 @@ var numof = 2; //total number of astros
 var changeA = 0; //0 when changing Astro is allowed
 var mfal = 0;
 var sscon = 0;
+var spk = 0; //0 to allow speak
 function preload() {
   speak("Exiting Space Station");
   //  You can fill the preloader with as many assets as your game requires
@@ -93,6 +94,7 @@ function update(){
 
   //m-falcom
   if(pad1.justPressed(4) && mfal == 0){
+    speak(" Here Comes the Millennium Falcon ");
     matrix(" Here Comes the Millennium Falcon ");
     mfal = 1;
     mfs.play();
@@ -107,6 +109,7 @@ function update(){
 
   //ssconnor
   if(pad1.justPressed(0) && sscon == 0){
+    speak(" SS Connor is Blasting Off ");
     matrix(" SS Connor is Blasting Off "); 
     sscon = 1;
     mfs.play();
@@ -155,10 +158,12 @@ function go_fullscreen(){
 
 
 function speak(msg){
-  if ('speechSynthesis' in window) {
+  if ('speechSynthesis' in window && spk == 0) {
+    spk = 1;
     var msg = new SpeechSynthesisUtterance(msg);
     msg.lang = 'en-US';
     window.speechSynthesis.speak(msg);
+    setTimeout(function(){spk = 0},3000);
   }
 }
 
@@ -181,6 +186,7 @@ function matrix(msg){
 
 function changeBG(){
   matrix(" Wormhole Found ");
+  speak(" Wormhole Found ");
   bg = Math.floor((Math.random() * 9) + 1);
   space.loadTexture('space_'+bg);
 }
