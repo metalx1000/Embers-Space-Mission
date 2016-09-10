@@ -132,14 +132,14 @@ function update(){
   }
 
   //move left and right
-  if(pad1.axis(2) == -1){
+  if(pad1.axis(2) == -1 || pad1.axis(1) == -1){
     astro.x+=speed+boost;
   }else if(pad1.axis(2) == 1){
     astro.x-=speed+boost;
   }
 
   //move up and down
-  if(pad1.axis(0) == 1){
+  if(pad1.axis(0) == 1 || pad1.axis(1) == 1){
     astro.y+=speed+boost;
   }else if(pad1.axis(0) == -1){
     astro.y-=speed+boost;
