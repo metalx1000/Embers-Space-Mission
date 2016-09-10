@@ -7,9 +7,11 @@ var speed = 1;
 var boost = 0;
 var msgset = 0;
 var bg = Math.floor((Math.random() * 9) + 1);
-
+var a = 1; //which astro are we on
+var numof = 2; //total number of astros
+var changeA = 0; //0 when changing Astro is allowed
 var mfal = 0;
-
+var sscon = 0;
 function preload() {
   speak("Exiting Space Station");
   //  You can fill the preloader with as many assets as your game requires
@@ -21,8 +23,12 @@ function preload() {
   for(var i = 1;i < 10;i++){
     game.load.image('space_'+i, 'res/images/space_'+i+'.jpg');
   }
-  game.load.image('astro', 'res/sprites/astro.png');
+  
+  for(var i = 1;i < 3;i++){
+    game.load.image('astro_'+i, 'res/sprites/astro_'+i+'.png');
+  }
   game.load.image('mf', 'res/sprites/m-falcom.png');
+  game.load.image('ss', 'res/sprites/ssconnor.png');
 
   game.load.audio('music', ['res/music/bg.ogg', 'res/music/bg.mp3']);
   game.load.audio('startup', ['res/sounds/startup.ogg', 'res/sounds/startup.mp3']);
@@ -43,8 +49,11 @@ function create() {
   //  displays it on-screen
   space = game.add.sprite(0, 0, 'space_'+bg);
   mf = game.add.sprite(-500, -500, 'mf');
+  ss = game.add.sprite(game.width/2,game.height + 700, 'ss');
+  ss.scale.setTo(.5);
+  ss.anchor.setTo(.5);
   //space.scale.setTo(3,3);
-  astro = game.add.sprite(centerx, centery, 'astro');
+  astro = game.add.sprite(centerx, centery, 'astro_1');
   astro.anchor.setTo(0.5, 0.5);
   
   //load sounds
@@ -84,6 +93,7 @@ function update(){
 
   //m-falcom
   if(pad1.justPressed(4) && mfal == 0){
+    matrix(" Here Comes the Millennium Falcon ");
     mfal = 1;
     mfs.play();
     var tween = game.add.tween(mf);
@@ -95,9 +105,27 @@ function update(){
     });
   }
 
+  //ssconnor
+  if(pad1.justPressed(0) && sscon == 0){
+    matrix(" SS Connor is Blasting Off "); 
+    sscon = 1;
+    mfs.play();
+    var tween2 = game.add.tween(ss);
+    tween2.to({ y : -2000 }, 8000, 'Linear', true, 0);
+    tween2.onComplete.add(function(){
+      ss.position.y = game.height + 700;
+      sscon = 0;
+    });
+  }
+
   //change BG
   if(pad1.justPressed(5)){
     changeBG();
+  }
+
+  //change ASTRO
+  if(pad1.justPressed(3)){
+    changeAstro();
   }
 
   //move left and right
@@ -145,13 +173,25 @@ function matrix(msg){
         console.log(data);
       });
       msgset = 0; 
-    }, 5000);
+    }, 15000);
   }
 
 }
 
 
 function changeBG(){
+  matrix(" Wormhole Found ");
   bg = Math.floor((Math.random() * 9) + 1);
   space.loadTexture('space_'+bg);
+}
+
+function changeAstro(){
+  if(changeA == 0){
+    changeA = 1;
+    a++;
+    if(a>numof){a=1}
+    astro.loadTexture('astro_'+a);
+    setTimeout(function(){changeA=0},500);
+  }
+
 }
